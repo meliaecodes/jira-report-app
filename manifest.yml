@@ -1,0 +1,18 @@
+modules:
+  jira:projectPage:
+    - key: jira-report-app-hello-world-project-page
+      resource: main
+      resolver:
+        function: resolver
+      render: native
+      title: jira-report-app
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: src/frontend/index.jsx
+app:
+  runtime:
+    name: nodejs22.x
+  id: 
