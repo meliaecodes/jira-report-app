@@ -12,11 +12,14 @@ modules:
 resources:
   - key: main
     path: src/frontend/index.jsx
-  - key: external-report
-    path: resources/external-report/build
+  - key: frame-report
+    path: resources/frame-hello-world/build
 app:
   runtime:
-    name: nodejs22.x
+    name: nodejs20.x
 permissions:
   scopes:
     - read:jira-work
+  content:
+    styles:
+      - 'unsafe-inline'
