@@ -5,14 +5,18 @@ modules:
       resolver:
         function: resolver
       render: native
-      title: jira-report-app
+      title: Jira Reports by Charlie
   function:
     - key: resolver
       handler: index.handler
 resources:
   - key: main
     path: src/frontend/index.jsx
+  - key: external-report
+    path: resources/external-report/build
 app:
   runtime:
     name: nodejs22.x
-  id: 
+permissions:
+  scopes:
+    - read:jira-work
