@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { BarChart, Box, Heading, Inline, Label, Link, SectionMessage, Select, SingleValueChart, Stack, Text, useProductContext, xcss } from '@forge/react';
+import ForgeReconciler, { BarChart, Box, Button, Frame, Heading, Inline, Label, PieChart, Select, Stack, useProductContext, xcss } from '@forge/react';
 import { invoke } from '@forge/bridge';
 import { PERIOD_A, PERIOD_B, WORK_DAY, MONTH_PICKER } from './data';
 
@@ -7,17 +7,8 @@ const BottomPaddedBox = ({ children }) => (
   <Box paddingBlockEnd="space.400">{children}</Box>
 );
 
-const leftNavStyle = xcss({
-  width: '20%',
-  padding: 'space.100',
-  maxWidth: '300px',
-  backgroundColor: 'color.background.neutral',
-  height: '100%',
-});
-
-
 const LeftNavBox = ({ children }) => (
-  <Box xcss={leftNavStyle} paddingInlineStart="space.400">{children}</Box>
+  <Box xcss={{ width: '20%', height: '100%', maxWidth: '300px', padding : 'space.100'}} paddingInlineStart="space.400">{children}</Box>
 );
 
 const MainBox = ({ children }) => (
@@ -116,11 +107,10 @@ const App = () => {
   const [issues, setIssues] = useState(null);
   const [reportingPeriod, setReportingPeriod] = useState(null);
   const [userData, setUserData] = useState(null);
+  const [showUIKit, setShowUIKit] = useState(true);
 
   const context = useProductContext();
-  if(context) {
-    console.log(context.extension.project.key)
-  }
+
 
   const setMonth = (input) => {
     setReportingPeriod(input.value)
@@ -144,54 +134,27 @@ const App = () => {
     }
   }, [groupData]);
 
-
-  function userReport() {
-    return (
-      <>
-        <BottomPaddedBox>
-        {userData && <BarChart
-          title="Resolved issues by assignee, age in buisness days"
-          subtitle="Count of resolved issues, by age in buisness days"
-          data={userData}
-          xAccessor={0}
-          yAccessor={1}
-          colorAccessor={2}
-        />}
-      </BottomPaddedBox>
-      </>
-    )
-  }
   function atlassianComponentsReport() {
     return (
       <>
       <BottomPaddedBox>
-        <Heading as="h2">Resolved issues</Heading>
-        <Heading as="h4">Resolution time in buisness days</Heading>
-        <SectionMessage appearance="information">
-          <Text>
-            The <Link href="https://developer.atlassian.com/platform/forge/ui-kit/components/single-value-chart/">Chart - Single Value</Link> isn't rendering properly at this time. 
-          </Text>
-        </SectionMessage>
-          <Inline space="space.400" spread="space-between">
-            <SingleValueChart
-              data={groupData.Resolved.groupA.length}
-              label={"Issues resolved in less than " + PERIOD_A + " days"}
-            />
-            <SingleValueChart
-              data={groupData.Resolved.groupB.length}
-              label={"Issues resolved in less than " + PERIOD_B + " days"}
-            />
-            <SingleValueChart
-              data={groupData.Resolved.groupC.length}
-              label={"Issues resolved in " + PERIOD_B + " days or more"}
-            />
-          </Inline>
-      </BottomPaddedBox>
-
-      <BottomPaddedBox>
+        <Inline spread='space-between'>
+          <PieChart
+              title="Resolved Issues"
+              subtitle="Count of resolved issues, by age in buisness days"
+              data={[
+                ['group_a', 'Under ' + PERIOD_A + ' days', groupData.Resolved.groupA.length],
+                ['group_b',PERIOD_A + ' - ' + PERIOD_B + ' days', groupData.Resolved.groupB.length],
+                ['group_c', 'over ' + PERIOD_B + ' or more days', groupData.Resolved.groupC.length],
+              ]}
+            colorAccessor={0} // position 0 in item array
+            labelAccessor={1} // position 1 in item array
+            valueAccessor={2} // position 2 in item array
+          /> 
           <BarChart 
             title="Unresolved Issues"
             subtitle="Count of unresolved issues, by age in buisness days"
+            width='600px'
             data={[
               ['Under ' + PERIOD_A + ' days', groupData.Unresolved.groupA.length],
               [PERIOD_A + ' - ' + PERIOD_B + ' days', groupData.Unresolved.groupB.length],
@@ -200,6 +163,18 @@ const App = () => {
             xAccessor={0}
             yAccessor={1} 
           />
+      </Inline>
+      </BottomPaddedBox>
+
+      <BottomPaddedBox>
+        {userData && <BarChart
+          title="Resolved issues by assignee, age in buisness days"
+          subtitle="Count of resolved issues, by age in buisness days"
+          data={userData}
+          xAccessor={0}
+          yAccessor={1}
+          colorAccessor={2}
+        />}
       </BottomPaddedBox>
       </>
     )
@@ -222,8 +197,19 @@ const App = () => {
         </BottomPaddedBox>
         {groupData && 
           <Inline space="space.400" spread="space-between" alignBlock="stretch">
-            <LeftNavBox><Text>Left Nav goes here</Text></LeftNavBox>
-            <MainBox>{atlassianComponentsReport()}</MainBox>
+            <LeftNavBox>
+              <Stack space="space.100" grow='hug' alignInline='start' spread='space-between'>
+                <Heading as="h3">Select report</Heading>
+                <Button spacing="compact" appearance='subtle' onClick={() => setShowUIKit(true)}>UI Kit Components</Button>
+                <Button spacing="compact"appearance='subtle' onClick={() => setShowUIKit(false)}>Frame Components</Button>
+              </Stack>
+            </LeftNavBox>
+            <MainBox>
+              <Stack>
+                {showUIKit && atlassianComponentsReport()}
+                {!showUIKit && <Frame resource='frame-report' />}
+              </Stack>
+            </MainBox>
           </Inline>}
     </>
   );

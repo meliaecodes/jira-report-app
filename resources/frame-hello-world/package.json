@@ -1,0 +1,35 @@
+{
+  "name": "frame-hello-world",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": ".",
+  "dependencies": {
+    "@atlaskit/css-reset": "^6.9.0",
+    "@forge/bridge": "3.4.0",
+    "chart.js": "^4.4.7",
+    "react": "~18.2.0",
+    "react-dom": "~18.2.0",
+    "react-google-charts": "^5.2.1",
+    "recharts": "^2.15.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0",
+    "react-scripts": "^5.0.1"
+  },
+  "scripts": {
+    "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
+    "build": "SKIP_PREFLIGHT_CHECK=true react-scripts build"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

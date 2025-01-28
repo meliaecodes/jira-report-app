@@ -1,8 +1,6 @@
 import Resolver from '@forge/resolver';
 import api, { route } from '@forge/api';
 
-
-
 const jiraDate = (d) => {
   const date = new Date(d)
   const year = date.getFullYear();
